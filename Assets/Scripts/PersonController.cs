@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class PersonController : MonoBehaviour
 {
@@ -6,7 +7,12 @@ public class PersonController : MonoBehaviour
     [SerializeField] private Transform player2;
     [SerializeField] private Camera playerCamera1;
     [SerializeField] private Camera playerCamera2;
-    [SerializeField] private float speed = 5f;
+    public static float _speed;
+
+    private void Start()
+    {
+        _speed = 5f;
+    }
 
     private void FixedUpdate()
     {
@@ -46,6 +52,6 @@ public class PersonController : MonoBehaviour
 
     private void Movement(Component player, Vector3 dir)
     {
-        player.transform.Translate(dir * (speed * Time.fixedDeltaTime));
+        player.transform.Translate(dir * (_speed * Time.fixedDeltaTime));
     }
 }
