@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Security;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -54,7 +55,7 @@ public class Base64Tutorial : MonoBehaviour
                 catch (IOException ex)
                 {
                     //Files already exist
-                    Debug.Log(ex);
+                    Debug.Log(ex.Message);
                 }
                 finally
                 {
@@ -64,7 +65,24 @@ public class Base64Tutorial : MonoBehaviour
                 var temp = Directory.GetFiles(outArchive)[0].Split('/');
                 var nameFileInArchive = temp[temp.Length - 1];
 
-                var dataJson = File.ReadAllText(Path.Combine(outArchive, nameFileInArchive));
+                string dataJson = null;
+                try
+                {
+                    dataJson = File.ReadAllText(Path.Combine(outArchive, nameFileInArchive));
+                }
+                catch (SecurityException ex)
+                {
+                    Debug.Log("No permission\n" + ex.Message);
+                }        
+                catch (IOException ex)
+                {
+                    Debug.Log("Error occurred while opening the file\n" + ex.Message);
+                }
+                finally
+                {
+                    Debug.Log("Reading completed");
+                }
+
                 var person = JsonUtility.FromJson<Person>(dataJson);
 
                 var texBase64 = Convert.FromBase64String(person.base64Texture);
