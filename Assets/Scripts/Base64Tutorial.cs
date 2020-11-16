@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -47,9 +46,20 @@ public class Base64Tutorial : MonoBehaviour
                 
                 if (!Directory.Exists(outArchive)) 
                     Directory.CreateDirectory(outArchive);
-                
-                if (Directory.GetFiles(outArchive).Length == 0)
+
+                try
+                {
                     ZipFile.ExtractToDirectory(outPath, outArchive);
+                }
+                catch (IOException ex)
+                {
+                    //Files already exist
+                    Debug.Log(ex);
+                }
+                finally
+                {
+                    Debug.Log("Unpacking completed");
+                }
                 
                 var temp = Directory.GetFiles(outArchive)[0].Split('/');
                 var nameFileInArchive = temp[temp.Length - 1];
